@@ -1,11 +1,11 @@
 import css from './ContactForm.module.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export const ContactForm = ({ handleSubmit, handleChange }) => {
-  const [username, setUsername] = useState('');
-  const [number, setNumber] = useState('');
+  const [username] = useState('');
+  const [number] = useState('');
 
   return (
     <form className={css.form} onSubmit={handleSubmit}>

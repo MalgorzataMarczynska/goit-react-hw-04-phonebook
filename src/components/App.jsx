@@ -33,15 +33,15 @@ export const App = () => {
   const handleChange = evt => {
     const name = evt.target.name;
     const value = evt.target.value;
-    console.log('input name', name, 'input value', value);
     const typeIndex = stateKeys.findIndex(key => key === name);
     stateMethods[typeIndex](value);
   };
 
   const handleSubmit = e => {
+    e.preventDefault();
     //const { username, number} = ContactForm();
     console.log('submit username', username);
-    e.preventDefault();
+
     //e.target.reset();
     const nameId = nanoid();
     const contact = { id: nameId, name: username, number: number };
@@ -77,8 +77,8 @@ export const App = () => {
   //   contact.name.toLowerCase().includes(filters.toLowerCase())
   // );
   useEffect(() => {
-    console.log('kontakty', contacts);
-  }, [contacts]);
+    console.log('kontakty', contacts, 'name', username, 'number', number);
+  }, [contacts, username, number]);
   return (
     <div>
       <h1 className="main-title">Phonebook</h1>

@@ -4,8 +4,8 @@ import React from 'react';
 import { useState } from 'react';
 
 export const ContactForm = ({ handleSubmit, handleChange }) => {
-  const [username] = useState('');
-  const [number] = useState('');
+  const [username, setUsername] = useState('');
+  const [number, setNumber] = useState('');
 
   return (
     <form className={css.form} onSubmit={handleSubmit}>

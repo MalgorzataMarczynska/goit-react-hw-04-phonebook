@@ -38,10 +38,8 @@ export const App = () => {
   };
 
   const handleSubmit = e => {
+    //const { username, number } = ContactForm();
     e.preventDefault();
-    //const { username, number} = ContactForm();
-    console.log('submit username', username);
-
     //e.target.reset();
     const nameId = nanoid();
     const contact = { id: nameId, name: username, number: number };

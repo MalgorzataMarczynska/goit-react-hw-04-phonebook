@@ -23,10 +23,23 @@ export const App = () => {
     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
   ]);
 
+  const [username, setUsername] = useState('');
+  const [number, setNumber] = useState('');
+  const stateKeys = Array.of('contacts', 'username', 'number');
+  const stateMethods = Array.of(setContacts, setUsername, setNumber);
+
   const { filters } = Filter() || '';
 
+  const handleChange = evt => {
+    const name = evt.target.name;
+    const value = evt.target.value;
+    console.log('input name', name, 'input value', value);
+    const typeIndex = stateKeys.findIndex(key => key === name);
+    stateMethods[typeIndex](value);
+  };
+
   const handleSubmit = e => {
-    const { username, number } = ContactForm();
+    //const { username, number} = ContactForm();
     console.log('submit username', username);
     e.preventDefault();
     //e.target.reset();
@@ -70,7 +83,7 @@ export const App = () => {
     <div>
       <h1 className="main-title">Phonebook</h1>
       <section>
-        <ContactForm handleSubmit={handleSubmit} />
+        <ContactForm handleSubmit={handleSubmit} handleChange={handleChange} />
       </section>
       <section>
         <h2 className="title">Contacts</h2>

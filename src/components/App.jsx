@@ -5,58 +5,46 @@ import { ContactList } from './ContactList/ContactList.js';
 import { ContactItem } from './ContactItem/ContactItem.js';
 import { ContactForm } from './ContactForm/ContactForm.js';
 
-// const INITIAL_STATE = {
-//   contacts: [
-//     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-//     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-//     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-//     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-//   ],
-//   filters: '',
-// };
+const INITIAL_STATE = [
+  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+];
 
 export const App = () => {
-  const [contacts, setContacts] = useState([
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ]);
+  const [contacts, setContacts] = useState(() => {
+    const contactList = localStorage.getItem('contact-list');
+    const parsedList = JSON.parse(contactList);
+    return parsedList.length > 0 ? parsedList : INITIAL_STATE;
+  });
 
-  const [username, setUsername] = useState('');
-  const [number, setNumber] = useState('');
-  const stateKeys = Array.of('contacts', 'username', 'number');
-  const stateMethods = Array.of(setContacts, setUsername, setNumber);
-
-  const { filters } = Filter() || '';
-
-  const handleChange = evt => {
-    const name = evt.target.name;
-    const value = evt.target.value;
-    const typeIndex = stateKeys.findIndex(key => key === name);
-    stateMethods[typeIndex](value);
-  };
+  const [filters, setFilters] = useState('');
 
   const handleSubmit = e => {
-    //const { username, number } = ContactForm();
     e.preventDefault();
-    //e.target.reset();
+    const target = e.target;
+    const username = target.username.value;
+    const number = target.number.value;
     const nameId = nanoid();
     const contact = { id: nameId, name: username, number: number };
     setContacts(contacts.concat(contact));
-    // const isDuplicate = contacts.find(cont =>
-    //   cont.name.toLowerCase().includes(newContact.name.toLowerCase())
-    // );
-    // if (isDuplicate) return alert(`${newContact.name} is already in contacts`);
+    const isDuplicate = contacts.find(cont =>
+      cont.name.toLowerCase().includes(contact.name.toLowerCase())
+    );
+    if (isDuplicate) return alert(`${contact.name} is already in contacts`);
+    target.reset();
     return { contacts };
   };
-  const removeContact = id => {
-    setContacts(state => {
-      contacts.filter(item => item.id !== id);
-      return { contacts };
-    });
+  const handleFilter = evt => {
+    const filterValue = evt.target.value;
+    setFilters(filterValue);
   };
 
+  const removeContact = id => {
+    const filteredContacts = contacts.filter(item => item.id !== id);
+    setContacts(filteredContacts);
+  };
   useEffect(() => {
     const contactList = window.localStorage.getItem('contact-list');
     if (!contactList) return;
@@ -71,21 +59,19 @@ export const App = () => {
     const contactListStringified = JSON.stringify(contacts);
     window.localStorage.setItem('contact-list', contactListStringified);
   }, [contacts]);
-  // const filteredContacts = contacts.filter(contact =>
-  //   contact.name.toLowerCase().includes(filters.toLowerCase())
-  // );
-  useEffect(() => {
-    console.log('kontakty', contacts, 'name', username, 'number', number);
-  }, [contacts, username, number]);
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filters.toLowerCase())
+  );
+
   return (
     <div>
       <h1 className="main-title">Phonebook</h1>
       <section>
-        <ContactForm handleSubmit={handleSubmit} handleChange={handleChange} />
+        <ContactForm handleSubmit={handleSubmit} />
       </section>
       <section>
         <h2 className="title">Contacts</h2>
-        <Filter />
+        <Filter searchQuery={handleFilter} />
         <ContactList>
           {filters === '' ? (
             <ContactItem
@@ -94,7 +80,7 @@ export const App = () => {
             ></ContactItem>
           ) : (
             <ContactItem
-              stateArray={contacts}
+              stateArray={filteredContacts}
               removeItem={removeContact}
             ></ContactItem>
           )}

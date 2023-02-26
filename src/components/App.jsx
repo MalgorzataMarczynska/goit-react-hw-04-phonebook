@@ -16,7 +16,7 @@ export const App = () => {
   const [contacts, setContacts] = useState(() => {
     const contactList = localStorage.getItem('contact-list');
     const parsedList = JSON.parse(contactList);
-    return parsedList.length > 0 ? parsedList : INITIAL_STATE;
+    return parsedList?.length > 0 ? parsedList : INITIAL_STATE;
   });
 
   const [filters, setFilters] = useState('');
@@ -32,8 +32,11 @@ export const App = () => {
     const isDuplicate = contacts.find(cont =>
       cont.name.toLowerCase().includes(contact.name.toLowerCase())
     );
-    if (isDuplicate) return alert(`${contact.name} is already in contacts`);
-    target.reset();
+    if (isDuplicate) {
+      setContacts(contacts);
+      return alert(`${contact.name} is already in contacts`);
+    }
+
     return { contacts };
   };
   const handleFilter = evt => {

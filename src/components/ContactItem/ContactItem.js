@@ -11,7 +11,6 @@ export const ContactItem = ({ stateArray, removeItem }) =>
           type="button"
           className={css.button}
           onClick={() => removeItem(contact.id)}
-          //onClick={removeItem}
         >
           Delete
         </button>
